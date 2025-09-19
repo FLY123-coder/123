@@ -6,6 +6,8 @@ import { GenerationPreview } from './GenerationPreview';
 import { executeTextStreamLLMRequest } from '@/llm/utils/streamService';
 import { LLMClient } from '@/llm/api/client';
 import { logger } from '@/stores/useLogStore';
+import { useSavedQuizzesStore } from '@/stores/savedQuizzesStore';
+import type { SavedQuiz } from '@/types/savedQuizTypes';
 
 interface GenerationFormProps {
   formData: GenerationRequest;
@@ -38,6 +40,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({
   isGenerating,
   error,
 }) => {
+  const { saveQuiz } = useSavedQuizzesStore();
   return (
     <form onSubmit={onSubmit} className='p-8'>
       {/* 基础信息 */}
@@ -108,6 +111,24 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({
 
       {/* 提交按钮 */}
       <div className='flex justify-end gap-4'>
+        <button
+          type='button'
+          onClick={async () => {
+            // 允许用户手动将当前配置保存为“空白试卷草稿”（仅标题和题量），以便后续查看
+            const draft: SavedQuiz = {
+              id: `draft_${Date.now()}`,
+              title: formData.subject ? `${formData.subject} - 草稿` : '未命名草稿',
+              createdAt: Date.now(),
+              questions: [],
+              savedAt: Date.now(),
+            } as unknown as SavedQuiz;
+            await saveQuiz(draft);
+            alert('已保存草稿到历史试卷');
+          }}
+          className='px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200'
+        >
+          保存草稿
+        </button>
         <button
           type='button'
           onClick={async () => {

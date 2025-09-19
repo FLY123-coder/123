@@ -21,6 +21,8 @@ interface AppStore extends GenerationActions, AnsweringActions, GradingActions {
   grading: AppState['grading'];
   // 全局重置
   resetApp: () => void;
+  // 加载指定试卷为当前试卷
+  setCurrentQuiz?: (quiz: AppState['generation']['currentQuiz']) => void;
 
   // 索引签名以兼容类型系统
   [key: string]: unknown;
@@ -66,6 +68,18 @@ export const useAppStore = create<AppStore>((set, get) => ({
         result: null,
         error: null,
       },
+    }));
+  },
+  setCurrentQuiz: quiz => {
+    set(state => ({
+      ...state,
+      generation: {
+        ...state.generation,
+        status: quiz ? 'complete' : 'idle',
+        currentQuiz: quiz,
+      },
+      answering: { currentQuestionIndex: 0, isSubmitted: false },
+      grading: { status: 'idle', result: null, error: null },
     }));
   },
 }));

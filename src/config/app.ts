@@ -5,9 +5,9 @@
 
 export const APP_CONFIG = {
   // 应用基本信息
-  name: 'QuAIz',
+  name: 'GenQuiz',
   version: '1.0.0',
-  description: 'AI智能出题系统 - Quiz You by AI Zipply',
+  description: 'GenQuiz - AI智能出题与导出',
 
   // 题目配置
   question: {

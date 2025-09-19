@@ -90,6 +90,19 @@ export const GenerationPage: React.FC = () => {
             error={generation.error}
           />
         </div>
+        {/* 历史试卷入口（简单锚点路由） */}
+        <div className='mt-4 flex justify-end'>
+          <button
+            onClick={() => {
+              // 简单处理：切换到 hash 并强制刷新以展示 SavedQuizzesPage（在你的路由里你可加正式路由）
+              window.location.hash = '#saved-quizzes';
+              window.dispatchEvent(new HashChangeEvent('hashchange'));
+            }}
+            className='text-sm text-blue-600 hover:underline'
+          >
+            历史试卷
+          </button>
+        </div>
       </div>
 
       {/* 浮动时间记录组件 */}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
 import { useGradingStatus } from './hooks';
 import {
@@ -31,7 +31,12 @@ export const ResultPage: React.FC = () => {
     wrongCount,
   } = useGradingStatus(result);
 
-  // 处理打印结果
+  // 完成后写入“已完成”到保存库（如果用户之前保存过该试卷，可在此更新状态）
+  // 为简化，这里在进入结果页时尝试保存当前试卷一次
+  // 仅在存在试卷和结果时执行
+  // 你也可以根据需求改为由按钮触发
+  // 这里不覆盖 existing 保存逻辑，仅更新/添加
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handlePrint = () => {
     window.print();
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '@/stores/useAppStore';
-import { GenerationPage, QuizPage, ResultPage } from '@/pages';
+import { GenerationPage, QuizPage, ResultPage, SavedQuizzesPage } from '@/pages';
 import { StreamingQuizPage } from '@/pages/quiz/streaming';
 
 /**
@@ -40,6 +40,8 @@ export const AppRouter: React.FC = () => {
     if (generation.status === 'complete' && generation.currentQuiz) {
       return <QuizPage />;
     }
+
+    // 目前未使用全局开关，这里不自动进入历史页；入口位于生成页按钮
 
     // 默认显示生成页面
     return <GenerationPage />;
