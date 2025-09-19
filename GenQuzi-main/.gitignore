@@ -1,0 +1,10 @@
+.env
+.env.local
+node_modules
+study
+
+.vscode
+.idea
+.trae
+.cursor
+.vercel
