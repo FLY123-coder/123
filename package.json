@@ -45,6 +45,7 @@
     "jspdf": "^3.0.3",
     "lucide-react": "^0.532.0",
     "react-window": "^1.8.11",
+    "recharts": "^2.15.4",
     "tailwindcss": "^4.1.11"
   }
 }

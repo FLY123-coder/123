@@ -3,7 +3,7 @@
  * 展示用户的学习进度追踪和分析结果
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BarChart3,
   TrendingUp,
@@ -14,13 +14,13 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
-import { useLocalProgressStore } from './progressStore';
+import { useLocalProgressStore } from '@/stores/progressStore';
 import {
   LearningTrajectoryOverview,
   KnowledgeMasteryAnalysis,
   StreakTracker,
   LearningRecommendations,
-} from '../../components/ProgressTracking';
+} from '@/components/ProgressTracking';
 
 type TabType =
   | 'overview'
@@ -30,16 +30,16 @@ type TabType =
   | 'recommendations';
 
 export const ChengguoPage: React.FC = () => {
-  const {
-    statistics,
-    knowledgeMastery,
-    recommendations,
-    isLoading,
-    error,
-    getLearningTrajectory,
-    generateMockData,
-    resetProgress,
-  } = useLocalProgressStore();
+  const statistics = useLocalProgressStore(s => s.statistics);
+  const knowledgeMastery = useLocalProgressStore(s => s.knowledgeMastery);
+  const learningRecords = useLocalProgressStore(s => s.learningRecords);
+  const recommendations = useLocalProgressStore(s => s.recommendations);
+  const isLoading = useLocalProgressStore(s => s.isLoading);
+  const error = useLocalProgressStore(s => s.error);
+  const getLearningTrajectory = useLocalProgressStore(s => s.getLearningTrajectory);
+  const calculateStatistics = useLocalProgressStore(s => s.calculateStatistics);
+  const generateMockData = useLocalProgressStore(s => s.generateMockData);
+  const resetProgress = useLocalProgressStore(s => s.resetProgress);
 
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | 'all'>(
@@ -47,6 +47,14 @@ export const ChengguoPage: React.FC = () => {
   );
   const [showMockData, setShowMockData] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // 若已有学习记录但掌握度对象为空，补一次统计（避免首次进入空白）
+  useEffect(() => {
+    if (learningRecords && learningRecords.length > 0 && Object.keys(knowledgeMastery || {}).length === 0) {
+      calculateStatistics();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 获取学习轨迹数据
   const learningTrajectory = getLearningTrajectory(
@@ -277,6 +285,24 @@ export const ChengguoPage: React.FC = () => {
                     <span className='text-sm'>重置数据</span>
                   </button>
                 )}
+                {/* 永久显示重置按钮 */}
+                <button
+                  onClick={handleResetData}
+                  className='flex items-center space-x-2 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors'
+                >
+                  <RefreshCw className='w-4 h-4' />
+                  <span className='text-sm'>清空学习成果</span>
+                </button>
+                {/* 返回主页 */}
+                <button
+                  onClick={() => {
+                    window.location.hash = '';
+                    window.dispatchEvent(new HashChangeEvent('hashchange'));
+                  }}
+                  className='flex items-center space-x-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors'
+                >
+                  <span className='text-sm'>返回主页</span>
+                </button>
               </div>
             </div>
           </div>

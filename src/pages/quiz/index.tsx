@@ -82,6 +82,17 @@ export const QuizPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quiz?.id]);
 
+  // 监听全局提交事件（Ctrl+Enter），由本页统一触发 handleSubmitQuiz，确保学习记录写入
+  useEffect(() => {
+    const onSubmitEvent = () => {
+      if (quiz) {
+        void handleSubmitQuiz(quiz);
+      }
+    };
+    window.addEventListener('app:submit-quiz', onSubmitEvent as EventListener);
+    return () => window.removeEventListener('app:submit-quiz', onSubmitEvent as EventListener);
+  }, [quiz, handleSubmitQuiz]);
+
   // 如果没有试卷，显示空状态
   if (!quiz) {
     return <EmptyQuizState onReset={resetApp} />;

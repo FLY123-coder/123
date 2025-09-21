@@ -4,6 +4,8 @@
 
 import type { GenerationState, StreamingQuestion, StateUpdater } from './types';
 import type { Quiz } from '@/types';
+import { useSavedQuizzesStore } from '@/stores/savedQuizzesStore';
+import type { SavedQuiz } from '@/types/savedQuizTypes';
 
 /**
  * 应用状态接口
@@ -172,5 +174,14 @@ export class GenerationStateManager {
         },
       };
     });
+
+    // 自动保存生成完成的试卷到历史试卷（异步、容错）
+    try {
+      const { saveQuiz } = useSavedQuizzesStore.getState();
+      const saved: SavedQuiz = { ...(quiz as unknown as SavedQuiz), savedAt: Date.now() };
+      void saveQuiz(saved);
+    } catch {
+      // 忽略保存失败，不影响生成流程
+    }
   }
 }

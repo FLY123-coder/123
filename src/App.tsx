@@ -52,13 +52,10 @@ function App() {
         previousQuestion();
         return;
       }
-      // Ctrl + Enter 提交
+      // Ctrl + Enter 提交：分发全局事件，由 QuizPage 统一处理提交与学习记录写入
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
-        void (async () => {
-          await submitQuiz();
-          await startGrading();
-        })();
+        window.dispatchEvent(new CustomEvent('app:submit-quiz'));
         return;
       }
       // Ctrl + L 日志开关
